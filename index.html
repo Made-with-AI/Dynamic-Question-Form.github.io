@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Question Form</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+        .question-card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Dynamic Question Form</h1>
+        <div class="form-group">
+            <label for="questionType">Select Question Type:</label>
+            <select id="questionType" class="form-control">
+                <option value="rangeCheck">Numerical Range Check</option>
+                <option value="mcq">MCQ (Single Choice)</option>
+                <option value="msq">MSQ (Multiple Choice)</option>
+            </select>
+        </div>
+        <button type="button" class="btn btn-primary mb-3" onclick="addQuestion()">Add Question</button>
+
+        <form id="questionForm">
+            <div id="questionsContainer"></div>
+            <button type="button" class="btn btn-success mt-4" onclick="submitForm()">Submit All</button>
+            <button type="button" class="btn btn-info mt-4" onclick="printReport()">Print Report</button>
+        </form>
+
+        <div id="result" class="mt-4"></div>
+        <div id="reportContainer" class="mt-4"></div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

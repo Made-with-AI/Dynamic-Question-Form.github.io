@@ -16,7 +16,13 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Dynamic Question Form</h1>
-        <div class="form-group">
+       
+        <form id="questionForm">
+            <div id="questionsContainer"></div>
+            <button type="button" class="btn btn-success mt-4" onclick="submitForm()">Submit All</button>
+            <button type="button" class="btn btn-info mt-4" onclick="printReport()">Print Report</button>
+        </form>
+ <div class="form-group">
             <label for="questionType">Select Question Type:</label>
             <select id="questionType" class="form-control">
                 <option value="rangeCheck">Numerical Range Check</option>
@@ -25,12 +31,6 @@
             </select>
         </div>
         <button type="button" class="btn btn-primary mb-3" onclick="addQuestion()">Add Question</button>
-
-        <form id="questionForm">
-            <div id="questionsContainer"></div>
-            <button type="button" class="btn btn-success mt-4" onclick="submitForm()">Submit All</button>
-            <button type="button" class="btn btn-info mt-4" onclick="printReport()">Print Report</button>
-        </form>
 
         <div id="result" class="mt-4"></div>
         <div id="reportContainer" class="mt-4"></div>

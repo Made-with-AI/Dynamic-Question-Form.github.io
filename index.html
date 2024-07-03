@@ -3,44 +3,403 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Question Form</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Custom CSS -->
-    <style>
-        .question-card {
-            margin-bottom: 20px;
+    <title>Dynamic-Question-Form.github.io
+
+</title>
+    <script>
+      let questionCount = 0;
+let questionStartTime = 0;
+let questionTimes = [];
+
+function addQuestion() {
+    const testName = document.getElementById('testName').value.trim();
+    const testDescription = document.getElementById('testDescription').value.trim();
+
+    if (!testName || !testDescription) {
+        alert("Please enter the test name and description before adding questions.");
+        return;
+    }
+
+    if (questionStartTime > 0) {
+        const currentTime = new Date().getTime();
+        const timeSpent = currentTime - questionStartTime;
+        questionTimes[questionCount - 1] = timeSpent;
+    }
+
+    questionStartTime = new Date().getTime();
+
+    const questionType = document.getElementById('questionType').value;
+    const questionsContainer = document.getElementById('questionsContainer');
+    
+    questionCount++;
+    let questionHtml = '';
+
+    if (questionType === 'rangeCheck') {
+        questionHtml = `
+            <div id="question${questionCount}" class="card question-card">
+                <div class="card-body">
+                    <h5 class="card-title">Numerical Range Check Question ${questionCount}</h5>
+                    <div class="form-group">
+                        <label for="number1_${questionCount}">Enter Number 1:</label>
+                        <input type="number" id="number1_${questionCount}" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="number2_${questionCount}">Enter Number 2:</label>
+                        <input type="number" id="number2_${questionCount}" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="number3_${questionCount}">Enter Number 3:</label>
+                        <input type="number" id="number3_${questionCount}" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="marksAwarded_${questionCount}">Marks Awarded:</label>
+                        <input type="number" id="marksAwarded_${questionCount}" class="form-control" placeholder="Enter marks for correct answer" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="marksDeducted_${questionCount}">Marks Deducted:</label>
+                        <input type="number" id="marksDeducted_${questionCount}" class="form-control" placeholder="Enter marks deducted for incorrect answer" required>
+                    </div>
+                    <button type="button" class="btn btn-danger" onclick="removeQuestion(${questionCount})">Remove</button>
+                </div>
+            </div>`;
+    } else if (questionType === 'mcq') {
+        questionHtml = `
+            <div id="question${questionCount}" class="card question-card">
+                <div class="card-body">
+                    <h5 class="card-title">MCQ Question ${questionCount}</h5>
+                    <div class="form-group">
+                        <p>Select the correct option:</p>
+                        <div>
+                            <label><input type="radio" name="option_${questionCount}" value="A" required> Option A</label>
+                        </div>
+                        <div>
+                            <label><input type="radio" name="option_${questionCount}" value="B"> Option B</label>
+                        </div>
+                        <div>
+                            <label><input type="radio" name="option_${questionCount}" value="C"> Option C</label>
+                        </div>
+                        <div>
+                            <label><input type="radio" name="option_${questionCount}" value="D"> Option D</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Correct Answer:</label>
+                        <div>
+                            <label><input type="checkbox" id="correctAnswer_${questionCount}_A" value="A"> A</label>
+                            <label><input type="checkbox" id="correctAnswer_${questionCount}_B" value="B"> B</label>
+                            <label><input type="checkbox" id="correctAnswer_${questionCount}_C" value="C"> C</label>
+                            <label><input type="checkbox" id="correctAnswer_${questionCount}_D" value="D"> D</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="marksAwarded_${questionCount}">Marks Awarded:</label>
+                        <input type="number" id="marksAwarded_${questionCount}" class="form-control" placeholder="Enter marks for correct answer" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="marksDeducted_${questionCount}">Marks Deducted:</label>
+                        <input type="number" id="marksDeducted_${questionCount}" class="form-control" placeholder="Enter marks deducted for incorrect answer" required>
+                    </div>
+                    <button type="button" class="btn btn-danger" onclick="removeQuestion(${questionCount})">Remove</button>
+                </div>
+            </div>`;
+    } else if (questionType === 'msq') {
+        questionHtml = `
+            <div id="question${questionCount}" class="card question-card">
+                <div class="card-body">
+                    <h5 class="card-title">MSQ Question ${questionCount}</h5>
+                    <div class="form-group">
+                        <p>Select all correct options:</p>
+                        <div>
+                            <label><input type="checkbox" name="option_${questionCount}" value="A"> Option A</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" name="option_${questionCount}" value="B"> Option B</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" name="option_${questionCount}" value="C"> Option C</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" name="option_${questionCount}" value="D"> Option D</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Correct Answer:</label>
+                        <div>
+                            <label><input type="checkbox" id="correctAnswer_${questionCount}_A" value="A"> A</label>
+                            <label><input type="checkbox" id="correctAnswer_${questionCount}_B" value="B"> B</label>
+                            <label><input type="checkbox" id="correctAnswer_${questionCount}_C" value="C"> C</label>
+                            <label><input type="checkbox" id="correctAnswer_${questionCount}_D" value="D"> D</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="marksAwarded_${questionCount}">Marks Awarded:</label>
+                        <input type="number" id="marksAwarded_${questionCount}" class="form-control" placeholder="Enter marks for correct answer" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="marksDeducted_${questionCount}">Marks Deducted:</label>
+                        <input type="number" id="marksDeducted_${questionCount}" class="form-control" placeholder="Enter marks deducted for incorrect answer" required>
+                    </div>
+                    <button type="button" class="btn btn-danger" onclick="removeQuestion(${questionCount})">Remove</button>
+                </div>
+            </div>`;
+    }
+
+    questionsContainer.insertAdjacentHTML('beforeend', questionHtml);
+    questionTimes.push(0);
+}
+
+function removeQuestion(questionId) {
+    document.getElementById(`question${questionId}`).remove();
+    questionTimes[questionId - 1] = 0;
+}
+
+function confirmSubmission() {
+    $('#confirmationModal').modal('show');
+}
+
+function submitForm() {
+    $('#confirmationModal').modal('hide');
+
+    const currentTime = new Date().getTime();
+    const timeSpent = currentTime - questionStartTime;
+    questionTimes[questionCount - 1] = timeSpent;
+
+    let score = 0;
+    let totalMarksSum = 0;
+    const reportData = [];
+
+    document.querySelectorAll('.question-card').forEach((questionDiv, index) => {
+        const questionType = questionDiv.querySelector('h5').textContent.split(' ')[0];
+        let correctAnswer, choicesMade, marksAwarded, marksDeducted, totalMarks, timeSpentOnQuestion;
+
+        if (questionType === 'Numerical') {
+            const number1 = parseInt(questionDiv.querySelector(`#number1_${index + 1}`).value);
+            const number2 = parseInt(questionDiv.querySelector(`#number2_${index + 1}`).value);
+            const number3 = parseInt(questionDiv.querySelector(`#number3_${index + 1}`).value);
+            marksAwarded = parseInt(questionDiv.querySelector(`#marksAwarded_${index + 1}`).value);
+            marksDeducted = parseInt(questionDiv.querySelector(`#marksDeducted_${index + 1}`).value);
+
+            correctAnswer = `${number2}, ${number3}`;
+            choicesMade = number1;
+
+            if (number1 >= number2 && number1 <= number3) {
+                score += marksAwarded;
+                totalMarks = marksAwarded;
+            } else {
+                score -= marksDeducted;
+                totalMarks = -marksDeducted;
+            }
+        } else if (questionType === 'MCQ') {
+            const selectedOption = questionDiv.querySelector(`input[name^="option_"]:checked`);
+            marksAwarded = parseInt(questionDiv.querySelector(`#marksAwarded_${index + 1}`).value);
+            marksDeducted = parseInt(questionDiv.querySelector(`#marksDeducted_${index + 1}`).value);
+
+            correctAnswer = Array.from(questionDiv.querySelectorAll(`input[id^="correctAnswer_"]:checked`)).map(el => el.value).join(', ');
+
+            if (selectedOption) {
+                choicesMade = selectedOption.value;
+                if (correctAnswer.includes(selectedOption.value)) {
+                    score += marksAwarded;
+                    totalMarks = marksAwarded;
+                } else {
+                    score -= marksDeducted;
+                    totalMarks = -marksDeducted;
+                }
+            }
+        } else if (questionType === 'MSQ') {
+            const selectedOptions = questionDiv.querySelectorAll(`input[name^="option_"]:checked`);
+            marksAwarded = parseInt(questionDiv.querySelector(`#marksAwarded_${index + 1}`).value);
+            marksDeducted = parseInt(questionDiv.querySelector(`#marksDeducted_${index + 1}`).value);
+
+            const selectedValues = Array.from(selectedOptions).map(el => el.value);
+            const correctValues = Array.from(questionDiv.querySelectorAll(`input[id^="correctAnswer_"]:checked`)).map(el => el.value);
+
+            correctAnswer = correctValues.join(', ');
+            choicesMade = selectedValues.join(', ');
+
+            let correctSelection = true;
+
+            // Check if all correct options are selected and no incorrect options are selected
+            correctValues.forEach(value => {
+                if (!selectedValues.includes(value)) {
+                    correctSelection = false;
+                }
+            });
+
+            selectedValues.forEach(value => {
+                if (!correctValues.includes(value)) {
+                    correctSelection = false;
+                }
+            });
+
+            if (correctSelection && selectedValues.length === correctValues.length) {
+                score += marksAwarded;
+                totalMarks = marksAwarded;
+            } else {
+                // Deduct marks for each incorrect option selected
+                const incorrectSelections = selectedValues.filter(value => !correctValues.includes(value));
+                const totalIncorrect = incorrectSelections.length;
+                const totalDeduction = marksDeducted * totalIncorrect;
+                score -= totalDeduction;
+                totalMarks = -totalDeduction;
+            }
         }
-    </style>
+
+        timeSpentOnQuestion = questionTimes[index];
+        totalMarksSum += totalMarks;
+
+        // Prepare data for report
+        const questionData = {
+            questionType: questionType,
+            correctAnswer: correctAnswer,
+            choicesMade: choicesMade,
+            marksAwarded: marksAwarded,
+            marksDeducted: marksDeducted,
+            totalMarks: totalMarks,
+            timeSpent: timeSpentOnQuestion
+        };
+        reportData.push(questionData);
+    });
+
+    document.getElementById('result').innerText = `Net Score: ${score}`;
+    generateReport(reportData, totalMarksSum);
+
+    // Clear the form
+    clearForm();
+}
+
+function clearForm() {
+    document.getElementById('testName').value = '';
+    document.getElementById('testDescription').value = '';
+    document.getElementById('questionsContainer').innerHTML = '';
+    questionCount = 0;
+    questionTimes = [];
+}
+
+function generateReport(reportData, totalMarksSum) {
+    const reportContainer = document.getElementById('reportContainer');
+    reportContainer.innerHTML = '';
+
+    if (reportData.length === 0) {
+        reportContainer.innerHTML = '<p>No questions submitted yet.</p>';
+        return;
+    }
+
+    // Retrieve test name and description
+    const testName = document.getElementById('testName').value;
+    const testDescription = document.getElementById('testDescription').value;
+
+    let reportHtml = `
+        <div style="text-align: center;">
+            <h2>${testName}</h2>
+            <p>${testDescription}</p>
+        </div>
+        <h3>Question Report</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Question Type</th>
+                        <th>Correct Answer</th>
+                        <th>Choices Made</th>
+                        <th>Marks Awarded</th>
+                        <th>Marks Deducted</th>
+                        <th>Total Marks</th>
+                        <th>Time Spent (ms)</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    reportData.forEach((data, index) => {
+        reportHtml += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${data.questionType}</td>
+                <td>${data.correctAnswer}</td>
+                <td>${data.choicesMade}</td>
+                <td>${data.marksAwarded}</td>
+                <td>${data.marksDeducted}</td>
+                <td>${data.totalMarks}</td>
+                <td>${data.timeSpent}</td>
+            </tr>
+        `;
+    });
+
+    reportHtml += `
+                </tbody>
+            </table>
+        </div>
+        <h4>Total Marks: ${totalMarksSum}</h4>
+    `;
+
+    reportContainer.innerHTML = reportHtml;
+}
+
+function printReport() {
+    const reportContainer = document.getElementById('reportContainer').innerHTML;
+    const originalContents = document.body.innerHTML;
+    document.body.innerHTML = reportContainer;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+
+    </script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Dynamic Question Form</h1>
-       
-        <form id="questionForm">
-            <div id="questionsContainer"></div>
-            <button type="button" class="btn btn-success mt-4" onclick="submitForm()">Submit All</button>
-            <button type="button" class="btn btn-info mt-4" onclick="printReport()">Print Report</button>
-        </form>
- <div class="form-group">
+    <div class="container">
+        <h1 class="text-center my-4">Dynamic-Question-Form.github.io
+</h1>
+        <div class="form-group">
+            <label for="testName">Test Name:</label>
+            <input type="text" id="testName" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="testDescription">Test Description:</label>
+            <textarea id="testDescription" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
             <label for="questionType">Select Question Type:</label>
             <select id="questionType" class="form-control">
                 <option value="rangeCheck">Numerical Range Check</option>
-                <option value="mcq">MCQ (Single Choice)</option>
-                <option value="msq">MSQ (Multiple Choice)</option>
+                <option value="mcq">MCQ</option>
+                <option value="msq">MSQ</option>
             </select>
         </div>
-        <button type="button" class="btn btn-primary mb-3" onclick="addQuestion()">Add Question</button>
-
+        <button id="addQuestionButton" class="btn btn-primary mb-4" onclick="addQuestion()">Add Question</button>
+        <form id="quizForm">
+            <div id="questionsContainer"></div>
+            <button type="button" class="btn btn-success mt-4" onclick="confirmSubmission()">Submit</button>
+        </form>
         <div id="result" class="mt-4"></div>
         <div id="reportContainer" class="mt-4"></div>
+        <button id="printButton" class="btn btn-secondary mt-4" onclick="printReport()">Print Report</button>
     </div>
-
-    <!-- Bootstrap JS and dependencies -->
+    <div class="modal" id="confirmationModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Submission</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to submit the quiz?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="submitForm()">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Custom JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
